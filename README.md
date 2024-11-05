@@ -32,6 +32,13 @@ This simply this simply wraps `fread` and reads the file stream into a dynamic h
 I plan on adding extents to specify max buffer size and a timeout.  
 As of right now, I don't need that tho.
 
+```c
+// stability: 9/10 - might add different platforms later but the call won't change.
+const char* gottz_get_exec_path();
+```
+This will just resolve /proc/self/exe for now. needs further testing.  
+If you want to use this outside linux, use [whereami](https://github.com/gpakosz/whereami) instead.
+
 I'll provide automated documentation at a later time.  
 Also proper language server support.
 

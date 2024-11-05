@@ -2,13 +2,16 @@
 
 #define GOTTZLIB_IMPL_VERSION_MAJOR 0
 #define GOTTZLIB_IMPL_VERSION_MINOR 0
-#define GOTTZLIB_IMPL_VERSION_PATCH 1
+#define GOTTZLIB_IMPL_VERSION_PATCH 2
 
 #if (GOTTZLIB_VERSION_MAJOR != GOTTZLIB_IMPL_VERSION_MAJOR)\
 || (GOTTZLIB_VERSION_MINOR != GOTTZLIB_IMPL_VERSION_MINOR)\
 || (GOTTZLIB_VERSION_PATCH != GOTTZLIB_IMPL_VERSION_PATCH)
 #error "gottzlib version mismatch between gottzlib.c and gottzlib.h"
 #endif
+
+#import <linux/limits.h>
+#import <unistd.h>
 
 const char* ERR_INSUFFICIENT_MEMORY = "insufficient memory";
 const char* ERR_FILE_ERROR = "error encountered during fread";
@@ -86,4 +89,16 @@ void* gottz_fread_to_heap_ex(size_t* buffer_size, size_t chunk_size, FILE* strea
 	*buffer_size = i;
 
 	return buffer;
+}
+
+char exec_path[PATH_MAX] = {0};
+
+const char* gottz_get_exec_path() {
+	if (*exec_path) return exec_path;
+	int len = readlink("/proc/self/exe", exec_path, PATH_MAX);
+	// logic somewhat taken from https://stackoverflow.com/a/63857510/1519836
+	if (len <= 0 || len == PATH_MAX) {
+		return 0;
+	}
+	return exec_path;
 }
