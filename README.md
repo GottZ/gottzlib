@@ -10,6 +10,7 @@ Testing was mostly done during development. I intend to add proper tests over ti
 see [test.c](https://github.com/GottZ/gottzlib/blob/root/test.c) and [gottzlib.h](https://github.com/GottZ/gottzlib/blob/root/gottzlib.h) for now.  
 for now, it just contains the following symbols:
 ```c
+// stability: 8/10 - not prone to symbol change. behavior may be improved later.
 void* gottz_quick_pread(size_t* buffer_size, const char* command)
 ```
 I consider this stable except for the missing `errno` usage.  
@@ -19,10 +20,12 @@ if anything goes wrong, it will return a null pointer and set a error value to `
 Right now, the underlying implementation also does `perror` calls I have to take out.
 
 ```c
+// stability: 8/10 - same state as gottz_quick_pread
 void* gottz_fread_to_heap(size_t* buffer_size, FILE* stream)
 ```
 It just calls the following with `GOTTZ_FREAD_CHUNK_SIZE` as default chunk size. (you can override it):
 ```c
+// stability: 2/10 - not the final design yet. Only use with version pinning or code review!
 void* gottz_fread_to_heap_ex(size_t* buffer_size, size_t chunk_size, FILE* stream)
 ```
 This simply this simply wraps `fread` and reads the file stream into a dynamic heap allocation.  
